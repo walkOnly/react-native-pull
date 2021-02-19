@@ -165,6 +165,26 @@ export default class extends Component {
         }
     }
 
+    /**
+     * 点击底部 tab 回到顶部并下拉刷新 - tiangui @ 20191030
+     */
+    autoRefresh() {
+        if (this.isPullState()) return;
+        
+        this.scroll.scrollTo({ x: 0, y: 0, animated: false });
+        
+        this.setFlag(flagPulling);
+        Animated.timing(this.state.pullPan, {
+            useNativeDriver: false,
+            toValue: { x: 0, y: 0 },
+            easing: Easing.linear,
+            duration: 300 // this.duration
+        }).start(() => {
+            this.setFlag(flagPullrelease);
+            this.props.onPullRelease && this.props.onPullRelease(this.resetDefaultXYHandler);
+        });
+    }
+
     /** 数据加载完成后调用此方法进行重置归位
     */
     resolveHandler() {
