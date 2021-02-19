@@ -14,6 +14,7 @@ import {
 
 import i18n from './i18n';
 import styles from './style/index.js';
+import WhirlImage from './WhirlImage';
 
 const pullOkMargin = 100; //下拉到ok状态时topindicator距离顶部的距离
 const defaultDuration = 300;
@@ -265,10 +266,18 @@ export default class extends Component {
 
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: defaultTopIndicatorHeight }}>
-                <ActivityIndicator size="small" color="gray" />
-                <Text ref={(c) => { this.txtPulling = c; }} style={styles.hide}>{i18n.pulling}</Text>
-                <Text ref={(c) => { this.txtPullok = c; }} style={styles.hide}>{i18n.pullok}</Text>
-                <Text ref={(c) => { this.txtPullrelease = c; }} style={styles.hide}>{i18n.pullrelease}</Text>
+                <WhirlImage />
+                <View>
+                    <Text ref={(c) => {this.txtPulling = c;}} style={[styles.hide, { color:'#919191', fontSize:14 }]}>下拉刷新...</Text>
+                    <Text ref={(c) => {this.txtPullok = c;}} style={[styles.hide, { color:'#919191', fontSize:14 }]}>释放刷新...</Text>
+                    <Text ref={(c) => {this.txtPullrelease = c;}} style={[styles.hide, { color:'#919191', fontSize:14 }]}>正在刷新...</Text>
+                    {
+                        !!this.props.lastUpdateTime &&
+                        <Text style={{ color: '#919191', fontSize:13 }}>
+                            {this.props.lastUpdateTime}
+                        </Text>
+                    }
+                </View>
             </View>
         );
     }
