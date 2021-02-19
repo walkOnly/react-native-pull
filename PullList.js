@@ -1,7 +1,8 @@
 ﻿'use strict';
 
 import React, { Component } from 'react';
-import { ListView } from 'react-native';
+import { ScrollView } from 'react-native';
+import ListView from 'deprecated-react-native-listview';
 
 import Pullable from './Pullable';
 
@@ -50,7 +51,9 @@ export default class extends Pullable {
 
     getScrollable() {
         return (
-            <ListView ref={(c) => {this.scroll = c;}} onScroll={this.onScroll} {...this.props} />
+            <ListView ref={(c) => {this.scroll = c;}} onScroll={this.onScroll} {...this.props}
+                renderScrollComponent={props => <ScrollView {...props} nativeID='react-native-pull' />}
+            />
         );
     }
 }
