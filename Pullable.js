@@ -134,6 +134,7 @@ export default class extends Component {
             }
             this.setFlag(flagPullrelease); // 完成下拉，已松开
             Animated.timing(this.state.pullPan, {
+                useNativeDriver: false,
                 toValue: { x: 0, y: 0 },
                 easing: Easing.linear,
                 duration: this.duration
@@ -175,6 +176,7 @@ export default class extends Component {
     resetDefaultXYHandler() {
         this.flag = defaultFlag;
         Animated.timing(this.state.pullPan, {
+            useNativeDriver: false,
             toValue: this.defaultXY,
             easing: Easing.linear,
             duration: this.duration
