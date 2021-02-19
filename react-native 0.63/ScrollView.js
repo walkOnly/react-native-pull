@@ -10,6 +10,7 @@
 
 'use strict';
 
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent'); // tiangui @ 20210218
 const AnimatedImplementation = require('../../Animated/src/AnimatedImplementation');
 const Platform = require('../../Utilities/Platform');
 const React = require('react');
@@ -61,6 +62,9 @@ if (Platform.OS === 'android') {
   RCTScrollView = ScrollViewNativeComponent;
   RCTScrollContentView = ScrollContentViewNativeComponent;
 }
+
+// tiangui @ 20210218
+const AndroidScrollView_hqw = requireNativeComponent('RCTScrollView_hqw');
 
 // Public methods for ScrollView
 export type ScrollViewImperativeMethods = $ReadOnly<{|
@@ -1029,7 +1033,11 @@ class ScrollView extends React.Component<Props, State> {
         ScrollViewClass = AndroidHorizontalScrollView;
         ScrollContentContainerViewClass = AndroidHorizontalScrollContentView;
       } else {
-        ScrollViewClass = AndroidScrollView;
+        // tiangui @ 20210218
+        // ScrollViewClass = AndroidScrollView;
+        ScrollViewClass = this.props.nativeID === 'react-native-pull'
+          ? AndroidScrollView_hqw
+          : AndroidScrollView;
         ScrollContentContainerViewClass = View;
       }
     } else {
