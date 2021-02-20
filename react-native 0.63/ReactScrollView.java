@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package com.facebook.react.views.scroll;
+package com.huanqiu.news.rn_patch_hqw;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -34,9 +34,20 @@ import com.facebook.react.uimanager.ReactClippingViewGroupHelper;
 import com.facebook.react.uimanager.StateWrapper;
 import com.facebook.react.uimanager.ViewProps;
 import com.facebook.react.uimanager.events.NativeGestureUtil;
+import com.facebook.react.views.scroll.FpsListener;
+import com.facebook.react.views.scroll.OnScrollDispatchHelper;
+import com.facebook.react.views.scroll.ReactHorizontalScrollView;
+import com.facebook.react.views.scroll.ReactScrollViewHelper;
+import com.facebook.react.views.scroll.VelocityHelper;
 import com.facebook.react.views.view.ReactViewBackgroundManager;
 import java.lang.reflect.Field;
 import java.util.List;
+
+import static com.huanqiu.news.rn_patch_hqw.ScrollUtil.getDirection;
+
+/**
+ * copy from RN 0.63.4 - tiangui @ 20210218
+ */
 
 /**
  * A simple subclass of ScrollView that doesn't dispatch measure and layout to its children and has
@@ -276,10 +287,46 @@ public class ReactScrollView extends ScrollView
     }
   }
 
+  // add by tiangui @ 20210218
+  float downX;
+  float downY;
+
+  /**
+   * 1. 手指往上滑，拦截 --- 视图滚动
+   * 2. 手指往下滑，分两种情况：
+   *   - 未到顶部，拦截 --- 视图滚动
+   *   - 已到顶部，不拦截
+   * 3. 与轮播图 ViewPage 的滑动冲突
+   *   - 只拦截竖向滑动，横向的不拦截
+   */
   @Override
   public boolean onInterceptTouchEvent(MotionEvent ev) {
     if (!mScrollEnabled) {
       return false;
+    }
+
+    // 这里使用 getRawX() / getRawY()
+    float curX = ev.getRawX();
+    float curY = ev.getRawY();
+
+    switch (ev.getAction()) {
+      case MotionEvent.ACTION_DOWN:
+        downX = curX;
+        downY = curY;
+        break;
+      case MotionEvent.ACTION_MOVE:
+      {
+        float dx = curX - downX;
+        float dy = curY - downY;
+        downX = curX;
+        downY = curY;
+        if (getScrollY() <= 0 && getDirection(dx, dy) == 'D') {
+          return false;
+        }
+      }
+        break;
+      case MotionEvent.ACTION_UP:
+        break;
     }
 
     try {

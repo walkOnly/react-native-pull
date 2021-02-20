@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package com.facebook.react.views.scroll;
+package com.huanqiu.news.rn_patch_hqw;
 
 import android.graphics.Color;
 import android.util.DisplayMetrics;
@@ -28,10 +28,18 @@ import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.ViewProps;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.annotations.ReactPropGroup;
+import com.facebook.react.views.scroll.FpsListener;
+import com.facebook.react.views.scroll.ReactScrollViewCommandHelper;
+import com.facebook.react.views.scroll.ReactScrollViewHelper;
+import com.facebook.react.views.scroll.ScrollEventType;
 import com.facebook.yoga.YogaConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+/**
+ * copy from RN 0.63.4 - tiangui @ 20210218
+ */
 
 /**
  * View manager for {@link ReactScrollView} components.
@@ -43,7 +51,7 @@ import java.util.Map;
 public class ReactScrollViewManager extends ViewGroupManager<ReactScrollView>
     implements ReactScrollViewCommandHelper.ScrollCommandHandler<ReactScrollView> {
 
-  public static final String REACT_CLASS = "RCTScrollView";
+  public static final String REACT_CLASS = "RCTScrollView_hqw"; // tiangui @ 20210218
 
   private static final int[] SPACING_TYPES = {
     Spacing.ALL, Spacing.LEFT, Spacing.RIGHT, Spacing.TOP, Spacing.BOTTOM,
