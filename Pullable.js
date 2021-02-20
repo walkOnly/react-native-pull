@@ -124,6 +124,7 @@ export default class extends Component {
             }
             this.setFlag(flagPullrelease); //完成下拉，已松开
             Animated.timing(this.state.pullPan, {
+                useNativeDriver: true,
                 toValue: {x: 0, y: 0},
                 easing: Easing.linear,
                 duration: this.duration
@@ -173,7 +174,19 @@ export default class extends Component {
 
     resetDefaultXYHandler() {
         this.flag = defaultFlag;
-        this.state.pullPan.setValue(this.defaultXY);
+        // this.state.pullPan.setValue(this.defaultXY);
+        Animated.timing(this.state.pullPan, {
+            useNativeDriver: true,
+            toValue: this.defaultXY,
+            easing: Easing.linear,
+            duration: 100
+        }).start(() => {
+            /**
+             * 不加这一行、手动下拉刷新会有 bug - tiangui @ 20191101
+             * 貌似是加了 useNativeDriver: true 后，原生端动画结束后、JS 端的 this.state.pullPan 未同步数据
+             */
+            this.state.pullPan.setValue(this.defaultXY);
+        });
     }
 
     UNSAFE_componentWillUpdate(nextProps, nextState) {
@@ -194,7 +207,15 @@ export default class extends Component {
         let refreshControl = this.props.refreshControl;
         return (
             <View style={[styles.wrap, this.props.style]} onLayout={this.onLayout}>
-                <Animated.View ref={(c) => {this.ani = c;}} style={[this.state.pullPan.getLayout()]}>
+                <Animated.View ref={(c) => {this.ani = c;}} style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    transform: [
+                        { translateX: this.state.pullPan.x },
+                        { translateY: this.state.pullPan.y }
+                    ]
+                }}>
                     {this.renderTopIndicator()}
                     <View ref={(c) => {this.scrollContainer = c;}} {...this.panResponder.panHandlers} style={{width: this.state.width, height: this.state.height}}>
                         {this.getScrollable(refreshControl)}
