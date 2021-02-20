@@ -1,7 +1,8 @@
 ﻿'use strict';
 
 import React, { Component } from 'react';
-import { ListView } from 'react-native';
+// import { ListView } from 'react-native';
+import ListView from 'deprecated-react-native-listview';
 
 import Pullable from './Pullable';
 

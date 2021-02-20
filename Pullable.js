@@ -176,7 +176,7 @@ export default class extends Component {
         this.state.pullPan.setValue(this.defaultXY);
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    UNSAFE_componentWillUpdate(nextProps, nextState) {
         if (nextProps.isPullEnd && this.state.pullrelease) {
             this.resetDefaultXYHandler();
         }
